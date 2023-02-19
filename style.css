@@ -1,0 +1,43 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: lightblue;
+  }
+
+  h1 {
+    margin: 0;
+  }
+  h2 {
+    color: rgb(0, 60, 255);
+  }
+  nav {
+    display: flex;
+  }
+
+  nav a {
+    margin-right: 20px;
+    text-decoration: none;
+    color: white;
+  }
+  #courses, #tutorials, #manuals {
+    padding: 20px;
+    background-color: lightgray;
+    margin-top: 20px;
+  }
+  main {
+    padding: 20px;
+  }
+  footer {
+    background-color: dodgerblue;
+    color: white;
+    padding: 10px;
+    text-align: center;
+  }
