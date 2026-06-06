@@ -1,5 +1,7 @@
 # Academia Web
 
+[![Screenshot check](https://github.com/edfrutos/Academia-WEB/actions/workflows/screenshot-check.yml/badge.svg)](https://github.com/edfrutos/Academia-WEB/actions/workflows/screenshot-check.yml)
+
 Sitio web estático de una sola página para una academia de formación en desarrollo web. Construido únicamente con HTML, CSS y JavaScript, sin dependencias ni paso de compilación.
 
 ## Características
