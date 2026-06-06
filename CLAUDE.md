@@ -10,6 +10,8 @@ Academia Web is a static, single-page educational website (Spanish-language) con
 
 Open `academiaWeb.html` directly in a browser, or serve the directory statically (e.g. `python3 -m http.server` then visit `/academiaWeb.html`). There is nothing to build, lint, or test.
 
+To launch and drive the app in a real browser (serve + exercise the live search + screenshots), use the `run-academia-web` project skill in `.claude/skills/run-academia-web/` — it has the verified flow and a ready-to-run Playwright driver.
+
 ## Architecture
 
 - `academiaWeb.html` — page structure. The three content sections (`#courses`, `#tutorials`, `#manuals`) and the search `<input>` are wired to the script. `busqueda.js` is loaded at the end of `<body>` so the DOM exists before it runs — keep the `<script>` tag in that position.
