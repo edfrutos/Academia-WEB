@@ -1,7 +1,7 @@
 // Obtener los elementos de las secciones
 const courses = document.querySelectorAll('#courses li');
-const tutorials = document.querySelectorAll('#tutorials p');
-const manuals = document.querySelectorAll('#manuals p');
+const tutorials = document.querySelectorAll('#tutorials li');
+const manuals = document.querySelectorAll('#manuals li');
 
 // Función para filtrar los elementos de una sección y ocultar la sección si no hay coincidencias
 function filterSection(items, sectionId, searchValue) {
