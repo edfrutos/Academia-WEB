@@ -10,27 +10,49 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
+// Normalizar a minúsculas y sin acentos (insensible a mayúsculas y diacríticos)
+function normalizeText(str) {
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}
+
+// Versión normalizada de un texto junto con el mapeo posición→índice original,
+// para poder localizar coincidencias sin acentos y resaltarlas en el texto real.
+function normalizeWithMap(text) {
+  let normalized = '';
+  const map = [];
+  for (let i = 0; i < text.length; i++) {
+    const part = normalizeText(text[i]);
+    for (let j = 0; j < part.length; j++) {
+      normalized += part[j];
+      map.push(i);
+    }
+  }
+  return { normalized, map };
+}
+
 // Resaltar todas las coincidencias del término dentro de un elemento.
 // Parte siempre del texto plano (textContent) para no acumular marcas previas.
 function highlight(item, searchValue) {
   const text = item.textContent;
-  if (searchValue === '' || !text.toLowerCase().includes(searchValue)) {
+  const { normalized, map } = normalizeWithMap(text);
+  if (searchValue === '' || !normalized.includes(searchValue)) {
     item.textContent = text;
     return;
   }
-  const lower = text.toLowerCase();
   let html = '';
+  let cursor = 0;
   let i = 0;
-  while (i < text.length) {
-    const idx = lower.indexOf(searchValue, i);
-    if (idx === -1) {
-      html += escapeHtml(text.slice(i));
-      break;
-    }
-    html += escapeHtml(text.slice(i, idx));
-    html += '<mark>' + escapeHtml(text.slice(idx, idx + searchValue.length)) + '</mark>';
+  while (i < normalized.length) {
+    const idx = normalized.indexOf(searchValue, i);
+    if (idx === -1) break;
+    const origStart = map[idx];
+    const origEnd = map[idx + searchValue.length - 1] + 1;
+    html += escapeHtml(text.slice(cursor, origStart));
+    html += '<mark>' + escapeHtml(text.slice(origStart, origEnd)) + '</mark>';
+    cursor = origEnd;
     i = idx + searchValue.length;
   }
+  html += escapeHtml(text.slice(cursor));
   item.innerHTML = html;
 }
 
@@ -38,7 +60,7 @@ function highlight(item, searchValue) {
 function filterSection(items, sectionId, searchValue) {
   let anyVisible = false;
   items.forEach(item => {
-    if (item.textContent.toLowerCase().includes(searchValue)) {
+    if (normalizeText(item.textContent).includes(searchValue)) {
       item.style.display = '';
       highlight(item, searchValue);
       anyVisible = true;
@@ -52,8 +74,8 @@ function filterSection(items, sectionId, searchValue) {
 
 // Función para filtrar los elementos
 function filterContent(e) {
-  // Obtener el valor de la entrada del usuario
-  const searchValue = e.target.value.toLowerCase();
+  // Obtener el valor de la entrada del usuario, normalizado
+  const searchValue = normalizeText(e.target.value);
 
   // Filtrar los elementos en cada sección
   filterSection(courses, 'courses', searchValue);
