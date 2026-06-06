@@ -41,3 +41,9 @@ body {
     padding: 10px;
     text-align: center;
   }
+  mark {
+    background-color: yellow;
+    color: black;
+    padding: 0 2px;
+    border-radius: 2px;
+  }
