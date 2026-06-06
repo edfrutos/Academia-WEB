@@ -1,5 +1,5 @@
 // Obtener los elementos de las secciones
-const courses = document.querySelectorAll('#courses p');
+const courses = document.querySelectorAll('#courses li');
 const tutorials = document.querySelectorAll('#tutorials p');
 const manuals = document.querySelectorAll('#manuals p');
 
@@ -8,7 +8,7 @@ function filterSection(items, sectionId, searchValue) {
   let anyVisible = false;
   items.forEach(item => {
     if (item.textContent.toLowerCase().includes(searchValue)) {
-      item.style.display = 'block';
+      item.style.display = '';
       anyVisible = true;
     } else {
       item.style.display = 'none';
