@@ -1,9 +1,10 @@
 // Driver for Academia Web: launches headless Chromium and exercises the live search.
 // Usage: serve the repo first (python3 -m http.server 8765), then `node drive.mjs`.
-// Playwright lives in /tmp/node_modules in this environment and is CommonJS,
-// so it must be imported via the default export (named `{ chromium }` fails).
-import pkg from '/tmp/node_modules/playwright/index.js';
-const { chromium } = pkg;
+// Playwright is CommonJS, so it's imported via the default export
+// (a named `{ chromium }` import fails). The module path is configurable:
+// locally it lives in /tmp/node_modules; CI installs it and sets PLAYWRIGHT_PKG=playwright.
+const PLAYWRIGHT_PKG = process.env.PLAYWRIGHT_PKG || '/tmp/node_modules/playwright/index.js';
+const { chromium } = (await import(PLAYWRIGHT_PKG)).default;
 
 const URL = process.env.URL || 'http://localhost:8765/academiaWeb.html';
 const OUT = process.env.OUT || '/tmp';

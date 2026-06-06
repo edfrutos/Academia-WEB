@@ -1,0 +1,48 @@
+name: Screenshot check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  drive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Playwright + Chromium
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install --no-save playwright@1.60.0
+          npx playwright install --with-deps chromium
+
+      - name: Serve the site
+        run: |
+          python3 -m http.server 8765 >/tmp/httpd.log 2>&1 &
+          for i in $(seq 1 20); do
+            curl -sf -o /dev/null http://localhost:8765/academiaWeb.html && break
+            sleep 0.5
+          done
+          curl -sf -o /dev/null -w "HTTP %{http_code}\n" http://localhost:8765/academiaWeb.html
+
+      - name: Drive the app and capture screenshots
+        env:
+          PLAYWRIGHT_PKG: playwright
+          URL: http://localhost:8765/academiaWeb.html
+          OUT: ${{ runner.temp }}
+        run: |
+          node .claude/skills/run-academia-web/drive.mjs | tee "$RUNNER_TEMP/report.json"
+          # Fail the build if the page logged any console errors.
+          node -e 'const r=require(process.env.RUNNER_TEMP+"/report.json"); if(r.consoleErrors!=="none"){console.error("Console errors:",r.consoleErrors);process.exit(1)}'
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: ${{ runner.temp }}/0*.png
